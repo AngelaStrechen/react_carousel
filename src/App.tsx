@@ -8,16 +8,18 @@ class App extends React.Component {
     itemWidth: 130,
     frameSize: 3,
     step: 3,
+    animationDuration: 500,
+    infinite: false,
   };
 
   render() {
-    const { images, itemWidth, frameSize, step } = this.state;
+    const { images, itemWidth, frameSize, step, animationDuration, infinite } =
+      this.state;
 
     return (
       <div className="App">
         <h1 data-cy="title">Carousel with {images.length} images</h1>
 
-        {/* Контрол для ширини картинки */}
         <label htmlFor="itemId">Item Width</label>
         <input
           id="itemId"
@@ -26,7 +28,6 @@ class App extends React.Component {
           onChange={e => this.setState({ itemWidth: +e.target.value })}
         />
 
-        {/* Контрол для frameSize */}
         <label htmlFor="frameId">Frame Size</label>
         <input
           id="frameId"
@@ -35,7 +36,6 @@ class App extends React.Component {
           onChange={e => this.setState({ frameSize: +e.target.value })}
         />
 
-        {/* Контрол для step */}
         <label htmlFor="stepId">Step</label>
         <input
           id="stepId"
@@ -44,13 +44,34 @@ class App extends React.Component {
           onChange={e => this.setState({ step: +e.target.value })}
         />
 
-        {/* Сам карусель */}
+        <label htmlFor="durationId">Animation Duration</label>
+        <input
+          id="durationId"
+          type="number"
+          value={animationDuration}
+          onChange={e =>
+            this.setState({
+              animationDuration: +e.target.value,
+            })
+          }
+        />
+
+        <label>
+          <input
+            type="checkbox"
+            checked={infinite}
+            onChange={e => this.setState({ infinite: e.target.checked })}
+          />
+          Infinite
+        </label>
+
         <Carousel
           images={images}
           itemWidth={itemWidth}
           frameSize={frameSize}
           step={step}
-          data-cy="carousel"
+          animationDuration={animationDuration}
+          infinite={infinite}
         />
       </div>
     );

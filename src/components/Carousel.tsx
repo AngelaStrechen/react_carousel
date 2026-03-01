@@ -3,29 +3,40 @@ import './Carousel.scss';
 
 interface CarouselProps {
   images: string[];
-  itemWidth: number;
-  frameSize: number;
-  step: number;
+  itemWidth?: number;
+  frameSize?: number;
+  step?: number;
+  animationDuration?: number;
+  infinite?: boolean;
 }
 
 const Carousel: React.FC<CarouselProps> = ({
   images,
-  itemWidth,
-  frameSize,
-  step,
+  itemWidth = 130,
+  frameSize = 3,
+  step = 3,
+  animationDuration = 500,
+  infinite = false,
 }) => {
   const [position, setPosition] = useState(0);
 
   const gap = 10;
-
   const maxPosition = Math.max(images.length - frameSize, 0);
 
   const handleNext = () => {
-    setPosition(prev => Math.min(prev + step, maxPosition));
+    if (infinite) {
+      setPosition(prev => (prev + step) % images.length);
+    } else {
+      setPosition(prev => Math.min(prev + step, maxPosition));
+    }
   };
 
   const handlePrev = () => {
-    setPosition(prev => Math.max(prev - step, 0));
+    if (infinite) {
+      setPosition(prev => (prev - step + images.length) % images.length);
+    } else {
+      setPosition(prev => Math.max(prev - step, 0));
+    }
   };
 
   const frameWidth = frameSize * itemWidth + (frameSize - 1) * gap;
@@ -38,7 +49,7 @@ const Carousel: React.FC<CarouselProps> = ({
         data-cy="prev"
         className="arrow"
         onClick={handlePrev}
-        disabled={position === 0}
+        disabled={!infinite && position === 0}
       >
         ‹
       </button>
@@ -55,6 +66,7 @@ const Carousel: React.FC<CarouselProps> = ({
           style={{
             width: listWidth,
             transform: `translateX(-${position * (itemWidth + gap)}px)`,
+            transition: `transform ${animationDuration}ms ease`,
           }}
         >
           {images.map((img, index) => (
@@ -75,7 +87,7 @@ const Carousel: React.FC<CarouselProps> = ({
         data-cy="next"
         className="arrow"
         onClick={handleNext}
-        disabled={position >= maxPosition}
+        disabled={!infinite && position >= maxPosition}
       >
         ›
       </button>
